@@ -23,7 +23,7 @@
     
     for (int i = 0; i < 5; i++) {
         SGExampleController *ec = [[SGExampleController alloc] init];
-        ec.title = [NSString stringWithFormat:@"Controller Nr. %d", i+1];
+        ec.title = [NSString stringWithFormat:@"Nr. %d", i+1];
         [pagerC addPage:ec];
     }
     
@@ -32,12 +32,13 @@
     
     for (int i = 0; i < 5; i++) {
         SGExampleController *ec = [[SGExampleController alloc] init];
-        ec.title = [NSString stringWithFormat:@"Controller Nr. %d", i+1];
+        ec.title = [NSString stringWithFormat:@"Nr. %d", i+1];
         [annotated addPage:ec];
     }
     
     UITabBarController *tabC = [[UITabBarController alloc] init];
-    [tabC setViewControllers:[NSArray arrayWithObjects:pagerC, annotated, nil] animated:NO];
+    //[tabC setViewControllers:[NSArray arrayWithObjects:pagerC, annotated, nil] animated:NO];
+    [tabC setViewControllers:[NSArray arrayWithObjects:annotated, pagerC, nil] animated:NO];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = tabC;

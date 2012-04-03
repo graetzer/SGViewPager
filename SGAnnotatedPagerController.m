@@ -20,7 +20,8 @@
 
 - (void)loadView {
     [super loadView];
-
+    self.view.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+    
     CGRect frame = CGRectMake(0, 0, self.view.bounds.size.width, TITLE_CONTROL_HEIGHT);
     titleScrollView = [[UIScrollView alloc] initWithFrame:frame];
     titleScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
@@ -37,7 +38,7 @@
     scrollView.delegate = self;
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight |
     UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-    [scrollView setBackgroundColor:[UIColor whiteColor]];
+    [scrollView setBackgroundColor:[UIColor clearColor]];
     [scrollView setCanCancelContentTouches:NO];
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.clipsToBounds = YES;
@@ -98,7 +99,7 @@
         return;
     }
     
-    CGFloat newXOff = (_scrollView.contentOffset.x/_scrollView.contentSize.width)*titleScrollView.contentSize.width;
+    CGFloat newXOff = (_scrollView.contentOffset.x/_scrollView.contentSize.width)*0.5*titleScrollView.bounds.size.width*self.childViewControllers.count;
     titleScrollView.contentOffset = CGPointMake(newXOff, 0);
     
 	/*
@@ -123,8 +124,8 @@
     }
     
 	CGFloat cx = 0;
-    CGFloat dx = 0;
-    CGFloat titleItemWidth = titleScrollView.bounds.size.width;
+    CGFloat titleItemWidth = titleScrollView.bounds.size.width/2;
+    CGFloat dx = titleItemWidth/2;
     
     NSUInteger count = self.childViewControllers.count;
 	for (NSUInteger i = 0; i < count; i++) {
@@ -132,10 +133,11 @@
         
         CGRect frame = CGRectMake(dx, 0, titleItemWidth, titleScrollView.bounds.size.height);
         UIView *view = [[UIView alloc]initWithFrame:frame];
-        view.backgroundColor = [UIColor clearColor];
+        view.backgroundColor = [UIColor lightGrayColor];
         UIFont *font = [UIFont boldSystemFontOfSize:15.0];
         CGSize size = [vC.title sizeWithFont:font];
-        frame = CGRectMake(0.5*(frame.size.width - size.width), 0.5*(frame.size.height - size.height), size.width, size.height);
+        frame = CGRectMake(0.5*(frame.size.width - size.width),
+                           0.5*(frame.size.height - size.height), size.width, size.height);
         UILabel *l = [[UILabel alloc] initWithFrame:frame];
         l.backgroundColor = [UIColor clearColor];
         l.font = font;
@@ -152,7 +154,7 @@
 		[scrollView addSubview:view];
 		cx += scrollView.frame.size.width;
 	}
-	[titleScrollView setContentSize:CGSizeMake(dx, titleScrollView.bounds.size.height)];
+	[titleScrollView setContentSize:CGSizeMake(dx+titleItemWidth/2, titleScrollView.bounds.size.height)];
 	[scrollView setContentSize:CGSizeMake(cx, scrollView.bounds.size.height)];
 }
 

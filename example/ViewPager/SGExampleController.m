@@ -16,31 +16,29 @@
 
 - (void)loadView {
     [super loadView];
-    UIFont *font = [UIFont systemFontOfSize:40.0];
-    CGSize size = [self.title sizeWithFont:font];
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    NSString *text = [NSString stringWithFormat:@"Content of\n Controller %@", super.title];
+    
+    UIFont *font = [UIFont boldSystemFontOfSize:25.0];
+    CGSize size = [@"Content of Controller" sizeWithFont:font];
     CGRect frame = CGRectMake(0.5*(self.view.bounds.size.width - size.width), 
-                              size.height, size.width, size.height);
+                              0.5*(self.view.bounds.size.height - 3*size.height), size.width, 3*size.height);
     UILabel *l = [[UILabel alloc] initWithFrame:frame];
+    l.lineBreakMode = UILineBreakModeWordWrap;
+    l.numberOfLines = 3;
     l.font = font;
-    l.text = self.title;
+    l.text = text;
     [self.view addSubview:l];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
+- (NSString *)title {
+    return [NSString stringWithFormat:@"Title %@", super.title];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    return YES;
 }
 
 @end

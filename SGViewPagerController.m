@@ -34,7 +34,7 @@
     scrollView.delegate = self;
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight |
     UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
-    [scrollView setBackgroundColor:[UIColor whiteColor]];
+    [scrollView setBackgroundColor:[UIColor scrollViewTexturedBackgroundColor]];
     [scrollView setCanCancelContentTouches:NO];
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;

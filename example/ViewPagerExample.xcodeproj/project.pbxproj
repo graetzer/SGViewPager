@@ -26,10 +26,10 @@
 		F44D9CBF15261759003D3E8F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F44D9CC115261759003D3E8F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F44D9CC315261759003D3E8F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		F44D9CC715261759003D3E8F /* ViewPagerExample-Info.plist */ = {isa = PBXFileReference; path = "ViewPagerExample-Info.plist"; sourceTree = "<group>"; };
+		F44D9CC715261759003D3E8F /* ViewPagerExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ViewPagerExample-Info.plist"; sourceTree = "<group>"; };
 		F44D9CC915261759003D3E8F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F44D9CCB15261759003D3E8F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		F44D9CCD15261759003D3E8F /* ViewPagerExample-Prefix.pch */ = {isa = PBXFileReference; path = "ViewPagerExample-Prefix.pch"; sourceTree = "<group>"; };
+		F44D9CCD15261759003D3E8F /* ViewPagerExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ViewPagerExample-Prefix.pch"; sourceTree = "<group>"; };
 		F44D9CCE15261759003D3E8F /* SGAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SGAppDelegate.h; sourceTree = "<group>"; };
 		F44D9CCF15261759003D3E8F /* SGAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SGAppDelegate.m; sourceTree = "<group>"; };
 		F44D9CD115261759003D3E8F /* SGExampleController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SGExampleController.h; sourceTree = "<group>"; };
