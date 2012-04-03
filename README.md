@@ -10,18 +10,18 @@ You don't have to load the viewcontrollers from a xib or a storyboard file, just
 has an appropriate size if you use a UINavigationController (416px) or a UITabBarController(411px).
 
 # Example code #
-<pre>
-SGAnnotatedPagerController *annotated = [[SGAnnotatedPagerController alloc] initWithNibName:@"SGAnnotatedPagerController" bundle:nil];
-annotated.title = @"TitleControl";
+<code>
+	SGAnnotatedPagerController *annotated = [[SGAnnotatedPagerController alloc]initWithNibName:@"SGAnnotatedPagerController" bundle:nil];
+	annotated.title = @"TitleControl";
 
-for (int i = 0; i < 5; i++) {
-    SGExampleController *ec = [[SGExampleController alloc] init];
-    ec.title = [NSString stringWithFormat:@"Nr. %d", i+1];
-    [annotated addPage:ec];
-}
+	for (int i = 0; i < 5; i++) {
+ 	   SGExampleController *ec = [[SGExampleController alloc] init];
+	    ec.title = [NSString stringWithFormat:@"Nr. %d", i+1];
+	    [annotated addPage:ec];
+	}
 self.window.rootViewController = annotated;
 // ...
-</pre>
+</code>
 
 For detailed example code look in the SGAppDelegate.m file in the example project
 
