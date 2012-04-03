@@ -61,7 +61,6 @@
 {
     [super viewDidLoad];
     [self reloadPages];
-	// Do any additional setup after loading the view.
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

@@ -1,10 +1,28 @@
 # Description #
-SGViewPager implements two types of UIViewController container, that allows to display the views
-of child viewcontroller's in a paged scrollview together with an indicator or a title bar.
-Both implementations provide animations for adding and removing of child viewcontroller's
+SGViewPager implements a custom UIViewController container, that displays the content of child viewcontroller's in a paged scrollview.
+I made two implementations:
+- SGAnnotatedPagerController: Shows the title of child viewcontroller's at the top
+- SGViewPagerController: Display a UIPageControl at the bottom of the page
 
 # How to use in your own project #
-Just copy either the SGAnnotatedPagerController.* files or the SGViewPagerController.* files in your XCode project
+Just copy either the SGAnnotatedPagerController.* files or the SGViewPagerController.* files in your XCode project.
+You don't have to load the viewcontrollers from a xib or a storyboard file, just make sure that the view
+has an appropriate size if you use a UINavigationController (416px) or a UITabBarController(411px).
+
+# Example code #
+<pre>
+ 	SGAnnotatedPagerController *annotated = [[SGAnnotatedPagerController alloc] initWithNibName:@"SGAnnotatedPagerController" bundle:nil];
+    annotated.title = @"TitleControl";
+    
+    for (int i = 0; i < 5; i++) {
+        SGExampleController *ec = [[SGExampleController alloc] init];
+        ec.title = [NSString stringWithFormat:@"Nr. %d", i+1];
+        [annotated addPage:ec];
+    }
+    self.window.rootViewController = annotated;
+</pre>
+
+For detailed example code look in the SGAppDelegate.m file in the example project
 
 # Licence #
 Copyright (c) 2012 Simon Grätzer

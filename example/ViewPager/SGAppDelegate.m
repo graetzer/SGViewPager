@@ -48,8 +48,7 @@
     }
     
     UITabBarController *tabC = [[UITabBarController alloc] init];
-    //[tabC setViewControllers:[NSArray arrayWithObjects:pagerC, annotated, nil] animated:NO];
-    [tabC setViewControllers:[NSArray arrayWithObjects:annotated, pagerC, nil] animated:NO];
+    [tabC setViewControllers:[NSArray arrayWithObjects:pagerC, annotated, nil] animated:NO];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = tabC;
