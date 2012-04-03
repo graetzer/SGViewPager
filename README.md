@@ -10,7 +10,7 @@ You don't have to load the viewcontrollers from a xib or a storyboard file, just
 has an appropriate size if you use a UINavigationController (416px) or a UITabBarController(411px).
 
 # Example code #
-<code>
+<pre><code>
 	SGAnnotatedPagerController *annotated = [[SGAnnotatedPagerController alloc]initWithNibName:@"SGAnnotatedPagerController" bundle:nil];
 	annotated.title = @"TitleControl";
 	for (int i = 0; i < 5; i++) {
@@ -20,7 +20,7 @@ has an appropriate size if you use a UINavigationController (416px) or a UITabBa
 	}
 	self.window.rootViewController = annotated;
 	// ...
-</code>
+</code></pre>
 
 For detailed example code look in the SGAppDelegate.m file in the example project
 
