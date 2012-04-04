@@ -1,8 +1,10 @@
 # Description #
 SGViewPager implements a custom UIViewController container, that displays the content of child viewcontroller's in a paged scrollview.
 I made two implementations:
-- SGAnnotatedPagerController: Shows the title of child viewcontroller's at the top, slightly similar to the stream view in the Google+ App
-- SGViewPagerController: Display a UIPageControl at the bottom of the page
+
+1.  SGAnnotatedPagerController: Shows the title of child viewcontroller's at the top, slightly similar to the stream view in the Google+ App
+
+2.  SGViewPagerController: Display a UIPageControl at the bottom of the page
 
 # How to use in your own project #
 Just copy either the SGAnnotatedPagerController.* files or the SGViewPagerController.* files in your XCode project.
