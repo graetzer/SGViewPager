@@ -25,10 +25,13 @@
 
 @property (readonly, nonatomic) UIPageControl *pageControl;
 @property (readonly, nonatomic) UIScrollView *scrollView;
-@property (assign, nonatomic) NSUInteger pageIndex;
+@property (nonatomic) NSUInteger pageIndex;
 
 - (void)reloadPages;
+
 - (void)addPage:(UIViewController *)controller;
 - (void)removePage:(NSUInteger)index;
+
+- (void)setPageIndex:(NSUInteger)index animated:(BOOL)animated;
 
 @end

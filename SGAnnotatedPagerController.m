@@ -49,8 +49,9 @@
     scrollView.delegate = self;
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight |
     UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-    [scrollView setBackgroundColor:[UIColor clearColor]];
-    [scrollView setCanCancelContentTouches:NO];
+    scrollView.autoresizesSubviews = YES;
+    scrollView.backgroundColor = [UIColor clearColor];
+    scrollView.canCancelContentTouches = NO;
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.clipsToBounds = YES;
     scrollView.scrollEnabled = YES;
@@ -75,6 +76,11 @@
     [self reloadPages];
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self setPageIndex:self.pageIndex animated:YES];
+}
+
+#pragma mark Add and remove
 - (void)addPage:(UIViewController *)controller; {
     [self addChildViewController:controller];
     [controller didMoveToParentViewController:self];
@@ -94,7 +100,11 @@
 }
 
 #pragma mark Properties
-- (void)setPageIndex:(NSUInteger)index {
+- (void)setPageIndex:(NSUInteger)pageIndex {
+    [self setPageIndex:pageIndex animated:NO];
+}
+
+- (void)setPageIndex:(NSUInteger)index animated:(BOOL)animated; {
     _pageIndex = index;
     /*
 	 *	Change the scroll view
@@ -104,11 +114,7 @@
     frame.origin.y = 0;
 	
     if (frame.origin.x < scrollView.contentSize.width) {
-        [scrollView scrollRectToVisible:frame animated:NO];
-        /*
-         *	When the animated scrolling finishings, scrollViewDidEndDecelerating will turn this off
-         */
-        pageControlIsChangingPage = YES;
+        [scrollView scrollRectToVisible:frame animated:animated];
     }
 }
 
@@ -120,10 +126,6 @@
 #pragma mark UIScrollViewDelegate stuff
 - (void)scrollViewDidScroll:(UIScrollView *)_scrollView
 {
-    if (pageControlIsChangingPage) {
-        return;
-    }
-    
     CGFloat newXOff = (_scrollView.contentOffset.x/_scrollView.contentSize.width)
                         *0.5*titleScrollView.bounds.size.width*self.childViewControllers.count;
     titleScrollView.contentOffset = CGPointMake(newXOff, 0);
@@ -134,11 +136,6 @@
     CGFloat pageWidth = _scrollView.frame.size.width;
     int page = floor((_scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
     _pageIndex = page;
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)_scrollView 
-{
-    pageControlIsChangingPage = NO;
 }
 
 - (void)reloadPages {

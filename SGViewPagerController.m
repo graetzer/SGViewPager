@@ -31,22 +31,25 @@
 
 - (void)loadView {
     [super loadView];
+    self.view.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
     
-    CGRect controlFrame = CGRectMake(0, self.view.bounds.size.height - PAGE_CONTROL_HEIGHT,
+    CGRect frame = CGRectMake(0, self.view.bounds.size.height - PAGE_CONTROL_HEIGHT,
                                      self.view.bounds.size.width, PAGE_CONTROL_HEIGHT);
-    pageControl = [[UIPageControl alloc] initWithFrame:controlFrame];
-    pageControl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
+    pageControl = [[UIPageControl alloc] initWithFrame:frame];
+    pageControl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin |
+    UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
     self.pageControl.backgroundColor = [UIColor blackColor];
     [pageControl addTarget:self action:@selector(changePage:) forControlEvents:UIControlEventValueChanged];
     
-    CGRect scrollFrame = CGRectMake(0, 0, self.view.bounds.size.width,
+    frame = CGRectMake(0, 0, self.view.bounds.size.width,
                                     self.view.bounds.size.height-PAGE_CONTROL_HEIGHT);
-    scrollView = [[UIScrollView alloc] initWithFrame:scrollFrame];
+    scrollView = [[UIScrollView alloc] initWithFrame:frame];
     scrollView.delegate = self;
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight |
-    UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
-    [scrollView setBackgroundColor:[UIColor scrollViewTexturedBackgroundColor]];
-    [scrollView setCanCancelContentTouches:NO];
+    UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+    scrollView.autoresizesSubviews = YES;
+    scrollView.backgroundColor = [UIColor clearColor];
+    scrollView.canCancelContentTouches = NO;
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
     scrollView.clipsToBounds = YES;
@@ -72,6 +75,11 @@
     [self reloadPages];
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self setPageIndex:self.pageIndex animated:YES];
+}
+
+#pragma mark Add and remove
 - (void)addPage:(UIViewController *)controller; {
     [self addChildViewController:controller];
     [controller didMoveToParentViewController:self];
@@ -91,7 +99,12 @@
 }
 
 #pragma mark Properties
-- (void)setPageIndex:(NSUInteger)index {
+- (void)setPageIndex:(NSUInteger)pageIndex {
+    [self setPageIndex:pageIndex animated:NO];
+}
+
+- (void)setPageIndex:(NSUInteger)index animated:(BOOL)animated; {
+
     pageControl.currentPage = index;
     /*
 	 *	Change the scroll view
@@ -101,7 +114,7 @@
     frame.origin.y = 0;
 	
     if (frame.origin.x < scrollView.contentSize.width) {
-        [scrollView scrollRectToVisible:frame animated:NO];
+        [scrollView scrollRectToVisible:frame animated:animated];
         /*
          *	When the animated scrolling finishings, scrollViewDidEndDecelerating will turn this off
          */

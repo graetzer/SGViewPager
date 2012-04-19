@@ -27,8 +27,10 @@
 
 - (void)loadView {
     [super loadView];
-    self.view.backgroundColor = [UIColor whiteColor];
     
+    self.view.autoresizesSubviews = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    self.view.backgroundColor = [UIColor whiteColor];
     NSString *text = [NSString stringWithFormat:@"Content of\n Controller %@", super.title];
     
     UIFont *font = [UIFont boldSystemFontOfSize:25.0];
@@ -40,6 +42,7 @@
     l.numberOfLines = 3;
     l.font = font;
     l.text = text;
+    l.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:l];
 }
 
