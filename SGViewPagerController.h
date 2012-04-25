@@ -20,7 +20,7 @@
 #import <UIKit/UIKit.h>
 
 @interface SGViewPagerController : UIViewController <UIScrollViewDelegate> {
-    BOOL pageControlIsChangingPage;
+    BOOL _lockPageChange;
 }
 
 @property (readonly, nonatomic) UIPageControl *pageControl;
@@ -28,10 +28,7 @@
 @property (nonatomic) NSUInteger pageIndex;
 
 - (void)reloadPages;
-
-- (void)addPage:(UIViewController *)controller;
-- (void)removePage:(NSUInteger)index;
-
+- (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated;//TODO animations
 - (void)setPageIndex:(NSUInteger)index animated:(BOOL)animated;
 
 @end

@@ -73,30 +73,33 @@
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
+    _lockPageChange = YES;
     [self reloadPages];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    [self setPageIndex:self.pageIndex animated:YES];
+    _lockPageChange = NO;
+    [self setPageIndex:self.pageIndex animated:NO];
 }
 
 #pragma mark Add and remove
-- (void)addPage:(UIViewController *)controller; {
-    [self addChildViewController:controller];
-    [controller didMoveToParentViewController:self];
-}
-
-- (void)removePage:(NSUInteger)index; {
-    UIViewController *c = [self.childViewControllers objectAtIndex:index];
-    [c willMoveToParentViewController:self];
-    if (index == self.pageIndex) {
-        if (index == 0)
-            self.pageIndex = index+1;
-        else
-            self.pageIndex = index-1;
+- (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated {
+    int oldCount = self.childViewControllers.count;
+    if (oldCount > 0) {
+        self.pageIndex = 0;
+        for (UIViewController *vC in self.childViewControllers) {
+            [vC willMoveToParentViewController:nil];
+            [vC removeFromParentViewController];
+        }
     }
-    [c removeFromParentViewController];
-    [self reloadPages];
+    
+    for (UIViewController *vC in viewControllers) {
+        [self addChildViewController:vC];
+        [vC didMoveToParentViewController:self];
+    }
+    if (oldCount > 0)
+        [self reloadPages];
+    //TODO animations
 }
 
 #pragma mark Properties
@@ -126,6 +129,10 @@
 #pragma mark UIScrollViewDelegate stuff
 - (void)scrollViewDidScroll:(UIScrollView *)_scrollView
 {
+    //The scrollview tends to scroll to a different page when the screen rotates
+    if (_lockPageChange)
+        return;
+    
     CGFloat newXOff = (_scrollView.contentOffset.x/_scrollView.contentSize.width)
                         *0.5*titleScrollView.bounds.size.width*self.childViewControllers.count;
     titleScrollView.contentOffset = CGPointMake(newXOff, 0);
@@ -156,6 +163,7 @@
         
         CGRect frame = CGRectMake(dx, 0, titleItemWidth, titleScrollView.bounds.size.height);
         UIView *view = [[UIView alloc]initWithFrame:frame];
+        view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         view.backgroundColor = [UIColor lightGrayColor];
         UIFont *font = [UIFont boldSystemFontOfSize:15.0];
         CGSize size = [vC.title sizeWithFont:font];

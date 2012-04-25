@@ -29,26 +29,31 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    SGViewPagerController *pagerC = [[SGViewPagerController alloc] initWithNibName:@"SGViewPagerController" bundle:nil];
-    pagerC.title = @"UIPageControl";
+    // The xib files are used to create views with a height adjusted to an UITabBarController
+    SGViewPagerController *pager = [[SGViewPagerController alloc] initWithNibName:@"SGViewPagerController" bundle:nil];
+    pager.title = @"UIPageControl";
     
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:5];
     for (int i = 0; i < 5; i++) {
         SGExampleController *ec = [[SGExampleController alloc] init];
         ec.title = [NSString stringWithFormat:@"Nr. %d", i+1];
-        [pagerC addPage:ec];
+        [array addObject:ec];
     }
+    [pager setViewControllers:array animated:NO];
     
-    SGAnnotatedPagerController *annotated = [[SGAnnotatedPagerController alloc] initWithNibName:@"SGAnnotatedPagerController" bundle:nil];
-    annotated.title = @"TitleControl";
+    SGAnnotatedPagerController *annotatedPager = [[SGAnnotatedPagerController alloc] initWithNibName:@"SGAnnotatedPagerController" bundle:nil];
+    annotatedPager.title = @"TitleControl";
     
+    [array removeAllObjects];
     for (int i = 0; i < 5; i++) {
         SGExampleController *ec = [[SGExampleController alloc] init];
         ec.title = [NSString stringWithFormat:@"Nr. %d", i+1];
-        [annotated addPage:ec];
+        [array addObject:ec];
     }
+    [annotatedPager setViewControllers:array animated:NO];
     
     UITabBarController *tabC = [[UITabBarController alloc] init];
-    [tabC setViewControllers:[NSArray arrayWithObjects:pagerC, annotated, nil] animated:NO];
+    [tabC setViewControllers:[NSArray arrayWithObjects:pager, annotatedPager, nil] animated:NO];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = tabC;

@@ -72,31 +72,35 @@
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
+    _lockPageChange = YES; //The scrollview tends to scroll to a different page when the screen rotates
     [self reloadPages];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    [self setPageIndex:self.pageIndex animated:YES];
+    _lockPageChange = NO;
+    [self setPageIndex:self.pageIndex animated:NO];
 }
 
 #pragma mark Add and remove
-- (void)addPage:(UIViewController *)controller; {
-    [self addChildViewController:controller];
-    [controller didMoveToParentViewController:self];
+- (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated {
+    int oldCount = self.childViewControllers.count;
+    if (oldCount > 0) {
+        self.pageIndex = 0;
+        for (UIViewController *vC in self.childViewControllers) {
+            [vC willMoveToParentViewController:nil];
+            [vC removeFromParentViewController];
+        }
+    }
+    
+    for (UIViewController *vC in viewControllers) {
+        [self addChildViewController:vC];
+        [vC didMoveToParentViewController:self];
+    }
+    if (oldCount > 0)
+        [self reloadPages];
+    //TODO animations
 }
 
-- (void)removePage:(NSUInteger)index; {
-    UIViewController *c = [self.childViewControllers objectAtIndex:index];
-    [c willMoveToParentViewController:self];
-    if (index == self.pageIndex) {
-        if (index == 0)
-            self.pageIndex = index+1;
-        else
-            self.pageIndex = index-1;
-    }
-    [c removeFromParentViewController];
-    [self reloadPages];
-}
 
 #pragma mark Properties
 - (void)setPageIndex:(NSUInteger)pageIndex {
@@ -118,7 +122,7 @@
         /*
          *	When the animated scrolling finishings, scrollViewDidEndDecelerating will turn this off
          */
-        pageControlIsChangingPage = YES;
+        _lockPageChange = YES;
     }
 }
 
@@ -130,10 +134,8 @@
 #pragma mark UIScrollViewDelegate stuff
 - (void)scrollViewDidScroll:(UIScrollView *)_scrollView
 {
-    if (pageControlIsChangingPage) {
+    if (_lockPageChange)
         return;
-    }
-    
 	/*
 	 *	We switch page at 50% across
 	 */
@@ -144,7 +146,7 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)_scrollView 
 {
-    pageControlIsChangingPage = NO;
+    _lockPageChange = NO;
 }
 
 - (void)reloadPages {
@@ -187,7 +189,7 @@
 	/*
 	 *	When the animated scrolling finishings, scrollViewDidEndDecelerating will turn this off
 	 */
-    pageControlIsChangingPage = YES;
+    _lockPageChange = YES;
 }
 
 @end
