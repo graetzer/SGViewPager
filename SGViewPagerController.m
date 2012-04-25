@@ -83,8 +83,7 @@
 
 #pragma mark Add and remove
 - (void)setViewControllers:(NSArray *)viewControllers animated:(BOOL)animated {
-    int oldCount = self.childViewControllers.count;
-    if (oldCount > 0) {
+    if (self.childViewControllers.count > 0) {
         self.pageIndex = 0;
         for (UIViewController *vC in self.childViewControllers) {
             [vC willMoveToParentViewController:nil];
@@ -96,10 +95,11 @@
         [self addChildViewController:vC];
         [vC didMoveToParentViewController:self];
     }
-    if (oldCount > 0)
+    if (self.scrollView)
         [self reloadPages];
     //TODO animations
 }
+
 
 
 #pragma mark Properties
