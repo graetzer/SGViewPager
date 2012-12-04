@@ -141,6 +141,7 @@
 	 */
     CGFloat pageWidth = _scrollView.frame.size.width;
     int page = floor((_scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+    
     pageControl.currentPage = page;
 }
 
