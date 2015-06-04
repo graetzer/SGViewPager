@@ -67,6 +67,9 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         bottomLine = UIView(frame: CGRectZero)
         bottomLine.backgroundColor = tabColor
         titleScrollView.addSubview(bottomLine)
+        tabIndicator = UIView(frame: CGRectZero)
+        tabIndicator.backgroundColor = tabColor
+        titleScrollView.addSubview(tabIndicator)
         
         contentScrollView = UIScrollView(frame: CGRectZero)
         contentScrollView.autoresizingMask = .FlexibleWidth | .FlexibleBottomMargin
@@ -169,7 +172,8 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
     }
     
     func layoutTabIndicator() {
-        
+        let labelF = tabLabels[selectedIndex].frame
+        tabIndicator.frame = CGRectMake(labelF.origin.x, labelF.size.height-4, labelF.size.width, 4)
     }
     
     // MARK: UIScrollViewDelegate
@@ -180,6 +184,7 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
             let next = Int(floor(page))
             if next != selectedIndex {
                 selectedIndex = next
+                UIView.animateWithDuration(0.3, animations: layoutTabIndicator)
             }
             
             var ignored : Double = 0.0
