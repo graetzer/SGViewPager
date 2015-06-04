@@ -228,7 +228,9 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        enableParallex = true // Always enable after an animation
+    public func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+        if scrollView == contentScrollView {
+            enableParallex = true// Always enable after an animation
+        }
     }
 }
