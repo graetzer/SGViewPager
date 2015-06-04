@@ -1,8 +1,8 @@
 //
 //  SGViewController.m
-//  ViewPager
+//  SGViewPager
 //
-//  Copyright (c) 2012 Simon Grätzer
+//  Copyright (c) 2012-2015 Simon Grätzer
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@
 
 - (void)loadView {
     [super loadView];
-    self.view.backgroundColor = [UIColor scrollViewTexturedBackgroundColor];
+    self.view.backgroundColor = [UIColor lightGrayColor];
     
     CGRect frame = CGRectMake(0, 0, self.view.bounds.size.width, TITLE_CONTROL_HEIGHT);
     titleScrollView = [[UIScrollView alloc] initWithFrame:frame];
@@ -160,7 +160,11 @@
         view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         view.backgroundColor = [UIColor lightGrayColor];
         UIFont *font = [UIFont boldSystemFontOfSize:15.0];
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0
+        CGSize size = [vC.title sizeWithAttributes:@{NSFontAttributeName:font}];
+#else
         CGSize size = [vC.title sizeWithFont:font];
+#endif
         frame = CGRectMake(0.5*(frame.size.width - size.width),
                            0.5*(frame.size.height - size.height), size.width, size.height);
         UILabel *l = [[UILabel alloc] initWithFrame:frame];

@@ -1,8 +1,8 @@
 //
 //  SGViewController.h
-//  ViewPager
+//  SGViewPager
 //
-//  Copyright (c) 2012 Simon Grätzer
+//  Copyright (c) 2012-2015 Simon Grätzer
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
