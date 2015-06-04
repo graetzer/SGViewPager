@@ -187,6 +187,7 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         layoutTabIndicator()
     }
     
+    /// Position the marker below the tab
     func layoutTabIndicator() {
         let labelF = tabLabels[selectedIndex].frame
         tabIndicator.frame = CGRectMake(labelF.origin.x, labelF.size.height-4, labelF.size.width, 4)
@@ -204,14 +205,16 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
             }
             
             var ignored : Double = 0.0
-            page = scrollView.contentOffset.x / pageWidth;
+            page = scrollView.contentOffset.x / pageWidth;// Current page index with fractions
             let index = Int(page)
             if index + 1 < viewControllerCount {
+                // We are using the difference from one label to the other to implement varying speeds
+                // so every title is exactly centered if you are on a page
                 let diff = tabLabels[index+1].frame.origin.x - tabLabels[index].frame.origin.x
-                let centering = (titleScrollView.frame.size.width - tabLabels[index].frame.size.width)/2
+                let centering1 = (titleScrollView.frame.size.width - tabLabels[index].frame.size.width)/2
                 let centering2 = (titleScrollView.frame.size.width - tabLabels[index+1].frame.size.width)/2
-                let frac = CGFloat(modf(Double(page), &ignored))
-                let newXOff = tabLabels[index].frame.origin.x + diff * frac - centering * (1-frac) - centering2 * frac;
+                let frac = CGFloat(modf(Double(page), &ignored))// Only fraction part remains, Eg 3.4344 -> 0.4344
+                let newXOff = tabLabels[index].frame.origin.x + diff * frac - centering1 * (1-frac) - centering2 * frac;
                 titleScrollView.contentOffset = CGPointMake(fmax(0, newXOff), 0)
             }
         }
