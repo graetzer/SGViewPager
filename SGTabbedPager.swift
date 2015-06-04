@@ -31,7 +31,7 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
     private var titleScrollView, contentScrollView : UIScrollView!
     private var viewControllers = [UIViewController]()
     private var viewControllerCount : Int = 0
-    private var tabLabels = [UILabel]()
+    private var tabLabels = [UIButton]()
     private var bottomLine, tabIndicator : UIView!
     private var selectedIndex : Int = 0
     
@@ -92,6 +92,14 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         self.layout()
     }
     
+    public override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        contentScrollView.delegate = nil
+        coordinator.animateAlongsideTransition(nil, completion: {(a) -> Void in
+            self.contentScrollView.delegate = self
+            self.switchPage(self.selectedIndex, animated: false)
+        })
+    }
+    
     public func reloadData() {
         for vc in viewControllers {
             vc.willMoveToParentViewController(nil)
@@ -115,8 +123,8 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         layout()
     }
     
-    public func switchPage(animated : Bool) {
-        let frame = CGRectMake(contentScrollView.frame.size.width * CGFloat(selectedIndex), 0,
+    public func switchPage(index :Int, animated : Bool) {
+        let frame = CGRectMake(contentScrollView.frame.size.width * CGFloat(index), 0,
             contentScrollView.frame.size.width, contentScrollView.frame.size.height) ;
         if frame.origin.x < contentScrollView.contentSize.width {
             contentScrollView.scrollRectToVisible(frame, animated: animated)
@@ -133,13 +141,21 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         
         let font = UIFont(name: "HelveticaNeue-Thin", size: 20)
         for var i = 0; i < self.viewControllerCount; i++ {
-            let label = UILabel(frame: CGRectZero)
-            label.text = self.datasource?.viewControllerTitle(i)
-            label.font = font
-            label.textAlignment = .Center
-            label.sizeToFit()
-            titleScrollView.addSubview(label)
-            tabLabels.append(label)
+            let button = UIButton.buttonWithType(.Custom) as! UIButton
+            button.setTitle(self.datasource?.viewControllerTitle(i), forState: .Normal)
+            button.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            button.titleLabel?.font = font
+            button.titleLabel?.textAlignment = .Center
+            button.sizeToFit()
+            button.addTarget(self, action: "receivedButtonTab:", forControlEvents: .TouchUpInside)
+            titleScrollView.addSubview(button)
+            tabLabels.append(button)
+        }
+    }
+    
+    public func receivedButtonTab(sender :UIButton)  {
+        if let i = find(tabLabels, sender) {
+            switchPage(i, animated:true)
         }
     }
     
@@ -196,22 +212,8 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
                 let centering2 = (titleScrollView.frame.size.width - tabLabels[index+1].frame.size.width)/2
                 let frac = CGFloat(modf(Double(page), &ignored))
                 let newXOff = tabLabels[index].frame.origin.x + diff * frac - centering * (1-frac) - centering2 * frac;
-                titleScrollView.contentOffset = CGPointMake(newXOff, 0)
+                titleScrollView.contentOffset = CGPointMake(fmax(0, newXOff), 0)
             }
         }
     }
 }
-
-extension Int {
-    var f: CGFloat { return CGFloat(self) }
-}
-
-extension Float {
-    var f: CGFloat { return CGFloat(self) }
-}
-
-extension Double {
-    var f: CGFloat { return CGFloat(self) }
-}
-
-
