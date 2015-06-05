@@ -146,7 +146,9 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         let frame = CGRectMake(contentScrollView.frame.size.width * CGFloat(index), 0,
             contentScrollView.frame.size.width, contentScrollView.frame.size.height) ;
         if frame.origin.x < contentScrollView.contentSize.width {
-            enableParallex = false
+            // Only disable parallax if scrollViewDidEndScrollingAnimation is gonna be called afterwards
+            enableParallex = !animated
+            
             // It doesn't look good if the tab's jumo back and then gets animated back
             var point = tabLabels[index].frame.origin
             point.x -= (titleScrollView.bounds.size.width - tabLabels[index].frame.size.width)/2
