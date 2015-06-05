@@ -52,6 +52,17 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         }
     }
     
+    /// Encode and decode the state
+    public override func encodeRestorableStateWithCoder(coder: NSCoder) {
+        super.encodeRestorableStateWithCoder(coder)
+        coder.encodeInteger(selectedIndex, forKey: "selectedIndex")
+    }
+    
+    public override func decodeRestorableStateWithCoder(coder: NSCoder) {
+        super.decodeRestorableStateWithCoder(coder)
+        selectedIndex = coder.decodeIntegerForKey("selectedIndex")
+    }
+    
     public override func loadView() {
         super.loadView()
         let size = self.view.bounds.size
@@ -124,6 +135,11 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         }
         generateTabs()
         layout()
+        
+        selectedIndex = min(viewControllerCount-1, selectedIndex)//Sanity check
+        if selectedIndex > 0 {// Happens for example in case of a restore
+            switchPage(selectedIndex, animated: false)
+        }
     }
     
     public func switchPage(index :Int, animated : Bool) {
