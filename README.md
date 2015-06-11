@@ -1,12 +1,20 @@
 # Description #
-SGViewPager implements a custom UIViewController container, that displays the content of child viewcontroller's in a paged scrollview.
-I made two implementations:
+SGViewPager contains custom UIViewController container, that display the content of child viewcontroller's in a paged scrollview.
+There are three implemenations, but the only recent one is [https://github.com/graetzer/SGViewPager/blob/master/SGTabbedPager.swift](SGTabbedPager)
+It is designed to look like the tabs in the android ActionBar and works really well for certain use cases.
+You can watch a [http://youtu.be/IgrEA3FjGfs](Demo video on youtube)
+It's written in swift and should be easy to customize.
 
-1.  SGAnnotatedPagerController: Shows the title of child viewcontroller's at the top, slightly similar to the stream view in the Google+ App
+For example code look at my [MealPlanner App](https://github.com/graetzer/iOS-MensaPlanner)
 
-2.  SGViewPagerController: Display a UIPageControl at the bottom of the page
+-------------------------
 
-# How to use in your own project #
+There are two more implementations, but they are not very recent. You will likely find the look outdated.
+-  SGAnnotatedPagerController: Shows the title of child viewcontroller's at the top, slightly similar to the stream view in the Google+ App
+
+-  SGViewPagerController: Display a UIPageControl at the bottom of the page
+
+# How to use these in your own project #
 Just copy either the SGAnnotatedPagerController.* files or the SGViewPagerController.* files in your XCode project.
 You don't have to load the viewcontrollers from a xib or a storyboard file, just make sure that the view
 has an appropriate size if you use a UINavigationController (416px) or a UITabBarController(411px).
