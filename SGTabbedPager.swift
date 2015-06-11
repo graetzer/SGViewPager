@@ -25,13 +25,21 @@ public protocol SGTabbedPagerDatasource {
     func viewControllerTitle(page:Int) -> String
 }
 
+public protocol SGTabbedPagerDelegate {
+    //func willShowViewController(page:Int) -> Void
+    func didShowViewController(page:Int) -> Void
+}
+
 public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
-    private let tabHeight = CGFloat(44);
+    
     public var datasource : SGTabbedPagerDatasource? = nil
+    public var delegate : SGTabbedPagerDelegate? = nil
+    
+    private let tabHeight = CGFloat(44);
     private var titleScrollView, contentScrollView : UIScrollView!
     private var viewControllers = [UIViewController]()
     private var viewControllerCount : Int = 0
-    private var tabLabels = [UIButton]()
+    private var tabButtons = [UIButton]()
     private var bottomLine, tabIndicator : UIView!
     private var selectedIndex : Int = 0
     private var enableParallex = true
@@ -52,7 +60,7 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    /// Encode and decode the state
+    // MARK: View Controller state restauration
     public override func encodeRestorableStateWithCoder(coder: NSCoder) {
         super.encodeRestorableStateWithCoder(coder)
         coder.encodeInteger(selectedIndex, forKey: "selectedIndex")
@@ -114,6 +122,7 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         })
     }
     
+    // MARK: Public methods
     public func reloadData() {
         for vc in viewControllers {
             vc.willMoveToParentViewController(nil)
@@ -122,23 +131,26 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         }
         viewControllers.removeAll(keepCapacity: true)
         
-        viewControllerCount = self.datasource!.numberOfViewControllers()
-        for var i = 0; i < viewControllerCount; i++ {
-            let vc = self.datasource!.viewController(i)
+        if let cc = datasource?.numberOfViewControllers() {
+            self.viewControllerCount = cc
+            for var i = 0; i < viewControllerCount; i++ {
+                let vc = datasource!.viewController(i)
+                
+                addChildViewController(vc)
+                let size = contentScrollView.frame.size
+                vc.view.frame = CGRectMake(size.width * CGFloat(i), 0, size.width, size.height)
+                contentScrollView.addSubview(vc.view)
+                vc.didMoveToParentViewController(self)
+                viewControllers.append(vc)
+            }
+            generateTabs()
+            layout()
             
-            addChildViewController(vc)
-            let size = contentScrollView.frame.size
-            vc.view.frame = CGRectMake(size.width * CGFloat(i), 0, size.width, size.height)
-            contentScrollView.addSubview(vc.view)
-            vc.didMoveToParentViewController(self)
-            viewControllers.append(vc)
-        }
-        generateTabs()
-        layout()
-        
-        selectedIndex = min(viewControllerCount-1, selectedIndex)//Sanity check
-        if selectedIndex > 0 {// Happens for example in case of a restore
-            switchPage(selectedIndex, animated: false)
+            // Sanity check for restored selectedIndex values
+            selectedIndex = min(viewControllerCount-1, selectedIndex)
+            if selectedIndex > 0 {// Happens for example in case of a restore
+                switchPage(selectedIndex, animated: false)
+            }
         }
     }
     
@@ -146,24 +158,25 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         let frame = CGRectMake(contentScrollView.frame.size.width * CGFloat(index), 0,
             contentScrollView.frame.size.width, contentScrollView.frame.size.height) ;
         if frame.origin.x < contentScrollView.contentSize.width {
-            // Only disable parallax if scrollViewDidEndScrollingAnimation is gonna be called afterwards
+            // It doesn't look good if the tab's jump back and then gets animated back
+            // by the code inside 'scrollViewDidScroll', but we only need to
+            // disable parallax if scrollViewDidEndScrollingAnimation is gonna be called afterwards
             enableParallex = !animated
             
-            // It doesn't look good if the tab's jumo back and then gets animated back
-            var point = tabLabels[index].frame.origin
-            point.x -= (titleScrollView.bounds.size.width - tabLabels[index].frame.size.width)/2
-            titleScrollView.setContentOffset(point, animated: true)
+            var point = tabButtons[index].frame.origin
+            point.x -= (titleScrollView.bounds.size.width - tabButtons[index].frame.size.width)/2
+            titleScrollView.setContentOffset(point, animated: animated)
             contentScrollView.scrollRectToVisible(frame, animated: animated)
         }
     }
     
-    // MARK: Helpers
-    
+    // MARK: Helpers methods
+    /// Generate the fitting UILabel's
     private func generateTabs() {
-        for label in tabLabels {
+        for label in self.tabButtons {
             label.removeFromSuperview()
         }
-        tabLabels.removeAll(keepCapacity: true)
+        self.tabButtons.removeAll(keepCapacity: true)
         
         let font = UIFont(name: "HelveticaNeue-Thin", size: 20)
         for var i = 0; i < self.viewControllerCount; i++ {
@@ -174,13 +187,14 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
             button.titleLabel?.textAlignment = .Center
             button.sizeToFit()
             button.addTarget(self, action: "receivedButtonTab:", forControlEvents: .TouchUpInside)
-            titleScrollView.addSubview(button)
-            tabLabels.append(button)
+            self.tabButtons.append(button)
+            self.titleScrollView.addSubview(button)
         }
     }
     
+    /// Action method to move the pager in the right direction
     public func receivedButtonTab(sender :UIButton)  {
-        if let i = find(tabLabels, sender) {
+        if let i = find(tabButtons, sender) {
             switchPage(i, animated:true)
         }
     }
@@ -194,7 +208,7 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         var currentX : CGFloat = 0
         size = contentScrollView.frame.size
         for var i = 0; i < self.viewControllerCount; i++ {
-            let label = tabLabels[i]
+            let label = tabButtons[i]
             if i == 0 {
                 currentX += (size.width - label.frame.size.width)/2
             }
@@ -213,9 +227,9 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
         layoutTabIndicator()
     }
     
-    /// Position the marker below the tab
+    /// Repositions the indication marker below the tab
     func layoutTabIndicator() {
-        let labelF = tabLabels[selectedIndex].frame
+        let labelF = tabButtons[selectedIndex].frame
         tabIndicator.frame = CGRectMake(labelF.origin.x, labelF.size.height-4, labelF.size.width, 4)
     }
     
@@ -227,25 +241,32 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
             let next = Int(floor(page))
             if next != selectedIndex {
                 selectedIndex = next
-                UIView.animateWithDuration(0.3, animations:layoutTabIndicator)
+                // Don't animate unless we wan't the parallax effect
+                UIView.animateWithDuration(enableParallex ? 0.3 : 0,
+                    animations:layoutTabIndicator,
+                    completion:{_ in
+                        delegate?.didShowViewController(selectedIndex)
+                })
             }
             
             var ignored : Double = 0.0
             page = scrollView.contentOffset.x / pageWidth;// Current page index with fractions
             let index = Int(page)
-            if index + 1 < viewControllerCount && enableParallex {
+            if enableParallex && index + 1 < viewControllerCount {
                 // We are using the difference from one label to the other to implement varying speeds
                 // for our custom parallax effect, so every title is exactly centered if you are on a page
-                let diff = tabLabels[index+1].frame.origin.x - tabLabels[index].frame.origin.x
-                let centering1 = (titleScrollView.bounds.size.width - tabLabels[index].frame.size.width)/2
-                let centering2 = (titleScrollView.bounds.size.width - tabLabels[index+1].frame.size.width)/2
+                let diff = tabButtons[index+1].frame.origin.x - tabButtons[index].frame.origin.x
+                let centering1 = (titleScrollView.bounds.size.width - tabButtons[index].frame.size.width)/2
+                let centering2 = (titleScrollView.bounds.size.width - tabButtons[index+1].frame.size.width)/2
                 let frac = CGFloat(modf(Double(page), &ignored))// Only fraction part remains, Eg 3.4344 -> 0.4344
-                let newXOff = tabLabels[index].frame.origin.x + diff * frac - centering1 * (1-frac) - centering2 * frac;
+                let newXOff = tabButtons[index].frame.origin.x + diff * frac - centering1 * (1-frac) - centering2 * frac;
                 titleScrollView.contentOffset = CGPointMake(fmax(0, newXOff), 0)
             }
         }
     }
     
+    /// Since it looks better, we disable the parralel movement effect on the title scrollview
+    /// before we do a scroll animation
     public func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
         if scrollView == contentScrollView {
             enableParallex = true// Always enable after an animation
