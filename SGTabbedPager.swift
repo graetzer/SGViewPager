@@ -112,13 +112,15 @@ public class SGTabbedPager: UIViewController, UIScrollViewDelegate {
     }
     
     public override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        titleScrollView.delegate = nil
-        contentScrollView.delegate = nil
-        coordinator.animateAlongsideTransition(nil, completion: {_ -> Void in
-            self.titleScrollView.delegate = self
-            self.contentScrollView.delegate = self
-            self.switchPage(self.selectedIndex, animated: false)
-        })
+        if titleScrollView != nil {
+            titleScrollView.delegate = nil
+            contentScrollView.delegate = nil
+            coordinator.animateAlongsideTransition(nil, completion: {_ -> Void in
+                self.titleScrollView.delegate = self
+                self.contentScrollView.delegate = self
+                self.switchPage(self.selectedIndex, animated: false)
+            })
+        }
     }
     
     // MARK: Public methods
